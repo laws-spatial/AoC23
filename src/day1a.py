@@ -3,7 +3,7 @@ from pathlib import Path
 
 # read data
 data_folder = Path("./data")
-data = data_folder / "day1a.txt"
+data = data_folder / "day1.txt"
 print(Path.cwd())
 print(data.absolute())
 
