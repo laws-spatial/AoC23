@@ -56,7 +56,7 @@ def main():
         for line in f:
             # :
             split_colon = split_at_colon(line)
-            before_colon = split_colon[0]
+            game_id_string = split_colon[0]
             after_colon = split_colon[1]
 
             # ;
@@ -65,25 +65,18 @@ def main():
             # ,
             split_comma = split_at_comma(split_semicolon)
 
-            # color counts dictionary
-            count_drawn_colors = dict(blue=0, green=0, red=0)
+            # possible?
+            possible = True
 
             # count, color
             for drawn_cubes in split_comma:
                 count, color = split_count_and_color(drawn_cubes)
 
-                count_drawn_colors[color] += count
-
-            # possible?
-            possible = True
-
-            for color, count in count_drawn_colors.items():
-                if count >= thresholds[color]:
+                if count > thresholds[color]:
                     possible = False
 
             if possible == True:
-                game_id = split_game_and_id(before_colon)
-                print(game_id)
+                game_id = split_game_and_id(game_id_string)
                 id_count += game_id
     
     print(f"The final count of all possible game ID's is {id_count}")
