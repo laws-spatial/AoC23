@@ -79,7 +79,7 @@ def number_to_the_sides(tracking_array:np.array, data:list[str]=None):
                 except:
                     continue
 
-    return number_to_the_sides()
+    return number_to_the_sides(tracking_array, data)
 
 
     
