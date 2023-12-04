@@ -20,11 +20,6 @@ test_data = ["467..114..",
 "...$.*....",
 ".664.598.."]
 
-# test = np.zeros((10, 10))
-# print(test)
-# test[5, 5] = "6"
-# print(test)
-
 # functions
 def queens_case_moves() -> list[np.array]:
     # set up all cases for checking values
@@ -62,54 +57,80 @@ def queens_case(data:list[str], position: np.array, tracking_array:np.array = No
 def number_to_the_sides(tracking_array:np.array, data:list[str]=None):
     for rowid in range(tracking_array.shape[0]):
         for colid in range(tracking_array.shape[1]):
+
             # get array value
             arr_val = tracking_array[rowid, colid]
 
+            # check if value is non-zero
             if arr_val > 0:
+                # see if left value is a number and add to tracking array
                 try:
                     val_to_left = data[rowid][colid-1]
-                    if val_to_left.is_numeric():
+                    if val_to_left.isnumeric():
                         tracking_array[rowid, colid-1] = val_to_left
                 except:
                     continue
+                # see if right value is a number and add to tracking array
                 try:
                     val_to_right = data[rowid][colid+1]
-                    if val_to_right.is_numeric():
+                    if val_to_right.isnumeric():
                         tracking_array[rowid, colid+1] = val_to_right
                 except:
                     continue
 
-    return number_to_the_sides(tracking_array, data)
-
-
-    
 # main function
 def main():
 
-    # tracking array
-    num_rows = len(test_data)
-    num_cols = len(test_data[0])
-
-    tracking_array = np.zeros((num_rows, num_cols))
-
-    # perform queens case on symbols
-    for rowid, row in enumerate(test_data):
-        for columnid, column in enumerate(row):
-
-            # check if value is non-period symbol
-            value = test_data[rowid][columnid]
-
-            if value != "." and value.isnumeric() == False:
-                # position
-                position = np.array([rowid, columnid])
-
-                queens_case(test_data, position, tracking_array)
-
-    # use tracking array to recursively look for numbers left and right of numbers
-    number_to_the_sides(tracking_array)
-
-
-    # print(tracking_array)
+    with open(data) as f:
     
+        # read data
+        engine_diagram = f.readlines()
+        
+        # engine_part_numbers
+        engine_part_numbers = []
+
+        # tracking array
+        num_rows = len(engine_diagram)
+        num_cols = len(engine_diagram[0])
+
+        tracking_array = np.zeros((num_rows, num_cols), dtype=int)
+
+        # perform queens case on symbols
+        for rowid, row in enumerate(engine_diagram):
+            for columnid, column in enumerate(row):
+
+                # check if value is non-period symbol
+                value = engine_diagram[rowid][columnid]
+
+                if value != "." and value.isnumeric() == False:
+                    # position
+                    position = np.array([rowid, columnid])
+
+                    queens_case(engine_diagram, position, tracking_array)
+
+        # use tracking array to recursively look for numbers left and right of numbers
+        for times in range(tracking_array.shape[0] * tracking_array.shape[1]):
+            number_to_the_sides(tracking_array, engine_diagram)
+
+        for row in tracking_array:
+            # convert np.array to string
+            row_str = np.array2string(row)
+
+            # strip out characters
+            row_str = row_str.replace("[", "")
+            row_str = row_str.replace("]", "")
+            row_str = row_str.replace(" ", "")
+
+            # split string at 0's
+            split_str = row_str.split("0")
+
+            for string in split_str:
+                if string.isnumeric():
+                    part_number = int(string)
+                    engine_part_numbers.append(part_number)
+
+        sum_of_engine_parts = sum(engine_part_numbers)
+        print(f"The sum of the engine part numbers is {sum_of_engine_parts}")
+
 if __name__ == "__main__":
     main()
